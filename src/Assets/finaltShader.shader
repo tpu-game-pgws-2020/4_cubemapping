@@ -8,6 +8,7 @@
         _AoTex ("AoTexture", 2D) = "white" {}
         _CubeTex("CubeMap", CUBE) = "white" {}
         _EnvDiffuse("EnvDiffuse", CUBE) = "white" {}
+        _Color("Color",Color)=(0,0,0,0)
         _F0("F0",Range(0,1.0))=0.6
     }
     SubShader
@@ -52,6 +53,7 @@
             sampler2D _NormalMap;
             sampler2D _MetalTex;
             float _F0;
+            float4 _Color;
             float4 _MainTex_ST;
 
             v2f vert (appdata v)
@@ -91,7 +93,7 @@
                 
                 float metalness =tex2D(_MetalTex,i.uv).x;
                 float F= _F0+(1.0-_F0)*(1-metalness)*pow((1.0-dot(normal,viwe_dir)),5);
-                col = (1.0-F)*col *ao*diffeus+env+metalness*F*env;
+                col =_Color*0.5+ (1.0-F)*col *ao*diffeus+env+metalness*F*env;
                 
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
